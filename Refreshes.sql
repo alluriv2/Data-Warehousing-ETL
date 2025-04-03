@@ -267,6 +267,8 @@ SET sd_loaded = TRUE;
 
 END
 
+-- Testing StoreDimensionRefresh
+
 INSERT INTO `store` (`storeid`, `storezip`, `regionid`) VALUES ('S16', '13699', 'N');
 
 -------------------------------------------------  Customer Dimension Refresh -------------------------------------------------
@@ -309,7 +311,82 @@ END
 INSERT INTO `customer` (`customerid`, `customername`, `customerzip`) VALUES ('2-8-422', 'Jan', '13699');
 
 
---- Testing product refresh
+--- Testing CustomerDimensionRefresh
 
 INSERT INTO `product` (`productid`, `productname`, `productprice`, `vendorid`, `categoryid`) VALUES ('1X8', 'JFK', '238', 'OA', 'FW');
 INSERT INTO `rentalProducts` (`productid`, `productname`, `vendorid`, `categoryid`, `productpricedaily`, `productpriceweekly`) VALUES ('1X8', 'JFK', 'OA', 'FW', '30', '70');
+
+
+-------------------------------------------------  Late Arriving Fact Refresh  -------------------------------------------------
+
+-- LateArrivingFactRefresh Procedure
+
+CREATE PROCEDURE LateArrivingFactRefresh()
+BEGIN
+
+DROP TABLE intermediate_fact;
+CREATE TABLE intermediate_fact AS
+SELECT sv.noofitems AS UnitsSold, sv.noofitems*p.productprice AS RevenueGenerated, 'Sales' AS RevenueType, sv.tid AS TransactionID, p.productid AS ProductID, st.storeid AS StoreID, st.customerid AS CustomerID, st.tdate AS FullDate
+FROM alluriv_ZAGIMORE.soldvia sv, alluriv_ZAGIMORE.product p, alluriv_ZAGIMORE.salestransaction st
+WHERE p.productid = sv.productid AND st.tid = sv.tid  AND
+st.tid NOT IN (
+    SELECT TransactionID
+    FROM alluriv_ZAGIMORE_DS.RevenueAndUnits
+    WHERE RevenueType = 'Sales'
+);
+
+
+ALTER TABLE intermediate_fact MODIFY RevenueType VARCHAR(25);
+INSERT INTO intermediate_fact(UnitsSold, RevenueGenerated, RevenueType, TransactionID, ProductID, StoreID, CustomerID, FullDate )
+SELECT 0 AS UnitsSold, r.productpricedaily * rv.duration AS RevenueGenerated, 'Rental, Daily' AS RevenueType, rv.tid AS TransactionID, r.productid AS ProductID, rt.storeid AS StoreID, rt.customerid AS CustomerID, rt.tdate AS FullDate
+FROM alluriv_ZAGIMORE.rentvia rv, alluriv_ZAGIMORE.rentalProducts r, alluriv_ZAGIMORE.rentaltransaction rt
+WHERE r.productid = rv.productid AND rt.tid = rv.tid AND rv.rentaltype = 'D' AND
+rt.tid NOT IN (
+    SELECT TransactionID
+    FROM alluriv_ZAGIMORE_DS.RevenueAndUnits
+    WHERE RevenueType LIKE 'R%'
+);
+
+
+INSERT INTO intermediate_fact(UnitsSold, RevenueGenerated, RevenueType, TransactionID, ProductID, StoreID, CustomerID, FullDate )
+SELECT 0 AS UnitsSold, r.productpriceweekly * rv.duration AS RevenueGenerated, 'Rental, Weekly' AS RevenueType, rv.tid AS TransactionID, r.productid AS ProductID, rt.storeid AS StoreID, rt.customerid AS CustomerID, rt.tdate AS FullDate
+FROM alluriv_ZAGIMORE.rentvia rv, alluriv_ZAGIMORE.rentalProducts r, alluriv_ZAGIMORE.rentaltransaction rt
+WHERE r.productid = rv.productid AND rt.tid = rv.tid AND rv.rentaltype = 'W' AND
+rt.tid NOT IN (
+    SELECT TransactionID
+    FROM alluriv_ZAGIMORE_DS.RevenueAndUnits
+    WHERE RevenueType LIKE 'R%'
+);
+
+
+INSERT INTO RevenueAndUnits(UnitSold, RevenueGenerated, RevenueType,TransactionID, CustomerKey, StoreKey, ProductKey, CalendarKey, ExtractionTimestamp, f_loaded)
+SELECT i.UnitsSold, i.RevenueGenerated, i.RevenueType, i.TransactionID, cud.CustomerKey, sd.StoreKey, pd.ProductKey, cad.CalendarKey, NOW(), FALSE
+FROM intermediate_fact i, CustomerDimension cud, StoreDimension sd, ProductDimension pd, CalendarDimension cad
+WHERE i.CustomerID = cud.CustomerID AND sd.StoreId = i.StoreID AND pd.ProductId = i.ProductID AND LEFT(pd.ProductType,1) = LEFT(i.RevenueType,1) AND i.FullDate = cad.FullDate;
+
+
+
+INSERT INTO alluriv_ZAGIMORE_DW.RevenueAndUnits(RevenueGenerated,UnitSold, RevenueType, TransactionID, CalendarKey, ProductKey, StoreKey, CustomerKey)
+SELECT RevenueGenerated,UnitSold, RevenueType, TransactionID, CalendarKey, ProductKey, StoreKey, CustomerKey
+FROM alluriv_ZAGIMORE_DS.RevenueAndUnits
+WHERE f_loaded = FALSE;
+
+
+UPDATE RevenueAndUnits
+SET f_loaded = TRUE 
+WHERE f_loaded = FALSE;
+
+END
+
+-- Testing LateArrivingFactRefresh
+
+INSERT INTO `rentaltransaction` (`tid`, `customerid`, `storeid`, `tdate`) VALUES ('ZXCV', '2-8-422', 'S5', '2025-03-21');
+INSERT INTO `rentvia` (`productid`, `tid`, `rentaltype`, `duration`) VALUES ('4X4', 'ZXCV', 'D', '3');
+INSERT INTO `rentvia` (`productid`, `tid`, `rentaltype`, `duration`) VALUES ('7X7', 'ZXCV', 'W', '6');
+
+
+INSERT INTO `salestransaction` (`tid`, `customerid`, `storeid`, `tdate`) VALUES ('DFGN', '6-7-888', 'S5', '2025-03-05');
+INSERT INTO `soldvia` (`productid`, `tid`, `noofitems`) VALUES ('2X2', 'DFGN', '4');
+
+INSERT INTO `rentaltransaction` (`tid`, `customerid`, `storeid`, `tdate`) VALUES ('854', '2-2-234', 'S10', '2025-01-14');
+INSERT INTO `rentvia` (`productid`, `tid`, `rentaltype`, `duration`) VALUES ('4X4', '854', 'D', '8'), ('3X3', '854', 'W', '3');
