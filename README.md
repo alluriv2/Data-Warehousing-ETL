@@ -60,7 +60,7 @@ This project is intended solely for educational purposes to showcase the applica
 
 4. **Create the Data Warehouse**: Run the `ZAGIMORE_DW_Creation.sql` script to establish the data warehouse structures. These structures are optimized for analytical queries and reporting.
 
-5. **Perform the Initial ELT**: Execute the `ETL.sql` script to process and load data from the staging area into the data warehouse. This step performs the initial extraction, transformation, and loading of data.
+5. **Perform the Initial ETL**: Execute the `ETL.sql` script to process and load data from the staging area into the data warehouse. This step performs the initial extraction, transformation, and loading of data.
 
 6. **Create Aggregates and Snapshots**: Run the `Aggregates_Snapshots.sql` script to generate necessary aggregates and snapshots. These are useful for reporting and historical analysis.
 
