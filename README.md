@@ -14,7 +14,7 @@ This project is intended solely for educational purposes to showcase the applica
 
 ## Running the ETL Process
 
-1. **Create the Database and Calendar Dimension**: Run the `ZAGIMORE_DB_Creation.sql` script to create the database and set up the calendar dimension. This script initializes the database and prepares the calendar dimension for time-based analyses.
+1. **Create the Database and Calendar Dimension**: Run the `ZAGIMORE_DB_Creation.sql` script to create the database.
 
 2. **Populate the Calendar Dimension**: Execute the `populateCalendarProcedure.sql` script to populate the calendar dimension table with date attributes. This step ensures that the calendar dimension is populated with the necessary data for analysis.
 
