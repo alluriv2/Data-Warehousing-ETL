@@ -1,6 +1,6 @@
 # ETL Project Using SQL and phpMyAdmin
 
-This project was developed as part of a Data Warehousing course to demonstrate the Extract, Transform, and Load (ETL) process using SQL within phpMyAdmin. It serves as an educational example of setting up databases, data staging, and a data warehouse, as well as performing ELT operations, aggregating data, and managing refresh procedures.
+This project was developed as part of a Data Warehousing course to demonstrate the Extract, Transform, and Load (ETL) process using SQL within phpMyAdmin. It serves as an educational example of setting up databases, data staging, and a data warehouse, as well as performing ETL operations, aggregating data, and managing refresh procedures.
 
 ## Technologies Used
 
