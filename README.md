@@ -35,6 +35,13 @@ This project is intended solely for educational purposes to showcase the applica
 ### 7. **Refreshes.sql**
    Contains stored procedures that handle data refreshes, updating the data warehouse with the latest information to ensure data consistency.
 
+### 8. **Type2Changes_Refresh.sql**
+   Implements Type 2 Slowly Changing Dimension (SCD) logic, adding historical tracking capabilities.
+
+### 9. **Procedures.sql**
+   Defines various stored procedures for refreshing dimension and fact tables.
+ 
+
 
 ## Getting Started
 
@@ -66,10 +73,15 @@ This project is intended solely for educational purposes to showcase the applica
 
 7. **Set Up Refresh Procedures**: Execute the `Refreshes.sql` script to establish procedures for keeping the data up-to-date. These procedures ensure that the data warehouse reflects the latest information.
 
+8. **Implement Type 2 Slowly Changing Dimension Logic**: Run the `Type2Changes_Refresh.sql` script to apply Type 2 SCD logic to the **Product** and **Customer** dimensions, enabling historical tracking of changes.
+
+9. **Execute All Procedures**: Execute the `Procedures.sql` script to define and execute all stored procedures for refreshing dimensions and fact tables. This step ensures that the data warehouse is fully updated.
+
+
 
 ## Acknowledgments
 
-This project was developed as part of the Data Warehousing course at Clarkson University. Special thanks to Professor Boris Jukic for guidance and support throughout the course.
+This project was developed as part of the Data Warehousing course at Clarkson University. Special thanks to Professor Boris Jukic and Naveen Ramachandra Reddy for guidance and support throughout the course.
 
 ## License
 
