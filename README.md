@@ -81,7 +81,7 @@ This project is intended solely for educational purposes to showcase the applica
 
 ## Acknowledgments
 
-This project was developed as part of the Data Warehousing course at Clarkson University. Special thanks to Professor Boris Jukic and Naveen Ramachandra Reddy for guidance and support throughout the course.
+This project was developed as part of the Data Warehousing course at Clarkson University. Special thanks to Professor Boris Jukic and Naveen Ramachandra Reddy (@Reddy01naveen) for guidance and support throughout the course.
 
 ## License
 
