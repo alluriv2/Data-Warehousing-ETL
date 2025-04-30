@@ -27,7 +27,7 @@ This project is intended solely for educational purposes to showcase the applica
    Sets up the **Data Warehouse** by creating the target database structures where transformed data will be loaded for analytical purposes.
 
 ### 5. **ETL.sql**
-   Executes the initial Extract, Transform, and Load (ELT) operations by processing raw data from the staging area, transforming it, and loading it into the data warehouse for analysis.
+   Executes the initial Extract, Transform, and Load (ETL) operations by processing raw data from the staging area, transforming it, and loading it into the data warehouse for analysis.
 
 ### 6. **Aggregates_Snapshots.sql**
    Manages the creation of aggregated summaries and snapshots of data, which are useful for reporting and historical analysis.
