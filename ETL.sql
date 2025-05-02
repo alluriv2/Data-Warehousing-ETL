@@ -78,3 +78,4 @@ FROM alluriv_ZAGIMORE_DS.CalendarDimension
 INSERT INTO alluriv_ZAGIMORE_DW.RevenueAndUnits(RevenueGenerated,UnitSold, RevenueType, TransactionID, CalendarKey, ProductKey, StoreKey, CustomerKey)
 SELECT RevenueGenerated,UnitSold, RevenueType, TransactionID, CalendarKey, ProductKey, StoreKey, CustomerKey
 FROM alluriv_ZAGIMORE_DS.RevenueAndUnits
+

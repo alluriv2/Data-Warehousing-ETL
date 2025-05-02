@@ -7,8 +7,6 @@ FROM ProductDimension
 ALTER TABLE ProductCategoryDimension
 ADD CategoryKey INT AUTO_INCREMENT PRIMARY KEY
 
-
-
 ---- Creating One Way Aggregation by Product Category 
 
 CREATE TABLE One_Way_Revenue_Agg_By_Product_Cat AS
@@ -19,8 +17,6 @@ GROUP BY r.CustomerKey, r.StoreKey, r.CalendarKey, pcd.CategoryKey;
 
 ALTER TABLE One_Way_Revenue_Agg_By_Product_Cat
 ADD PRIMARY KEY(CalendarKey, CustomerKey, StoreKey, CategoryKey);
-
-
 
 --- Creating both Product Category Dimension and One Way aggregation by product category tables to data ware housing from data staging 
 
